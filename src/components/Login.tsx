@@ -2,20 +2,61 @@ import Header from "./Header";
 import { SITE_UI_BACKGROUND } from "../utils/constants";
 import { useState, useRef } from "react";
 import { checkValidateData } from "../utils/validateData";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const email = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>(null);
+  const name = useRef<HTMLInputElement>(null);
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
   };
 
   const handleSubmit = () => {
     if (email.current && password.current) {
-      const message = checkValidateData(email.current.value, password.current.value);
+      const message = checkValidateData(
+        email.current.value,
+        password.current.value
+      );
       setErrorMessage(message);
+      if (message) return;
+      if (!isSignInForm) {
+        //Sign Up
+        createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+          .then((userCredential) => {
+            // Signed up
+            const user = userCredential.user;
+            // if (name.current) {
+            //   user.displayName = name.current.value; // Assign the name to user object
+            // }
+            console.log(user);
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(errorCode + " - " + errorMessage);
+            // ..
+          });
+      } else {
+        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
+  .then((userCredential) => {
+    // Signed in 
+    const user = userCredential.user;
+    console.log(user);
+
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    setErrorMessage(errorCode + " - " + errorMessage);
+  });
+
+      }
     }
   };
 
@@ -42,6 +83,7 @@ const Login = () => {
             <input
               className="p-4 my-2 w-full  bg-gray-800 border border-gray-600 rounded"
               type="text"
+              ref={name}
               placeholder="Enter Name"
             />
           )}
@@ -54,7 +96,7 @@ const Login = () => {
           <input
             className="p-4 my-2 w-full  bg-gray-800 border border-gray-600 rounded"
             type="password"
-            ref = {password}
+            ref={password}
             placeholder="Password"
           />
           <p className="text-red-500 font-bold text-lg py-2">{errorMessage}</p>
