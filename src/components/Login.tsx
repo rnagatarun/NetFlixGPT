@@ -2,14 +2,21 @@ import Header from "./Header";
 import { SITE_UI_BACKGROUND } from "../utils/constants";
 import { useState, useRef } from "react";
 import { checkValidateData } from "../utils/validateData";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const email = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>(null);
@@ -28,7 +35,11 @@ const Login = () => {
       if (message) return;
       if (!isSignInForm) {
         //Sign Up
-        createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
+        createUserWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        )
           .then((userCredential) => {
             // Signed up
             const user = userCredential.user;
@@ -45,21 +56,46 @@ const Login = () => {
             // ..
           });
       } else {
-        signInWithEmailAndPassword(auth, email.current.value, password.current.value)
-  .then((userCredential) => {
-    // Signed in 
-    const user = userCredential.user;
-    console.log(user);
-    navigate("/browse");
+        signInWithEmailAndPassword(
+          auth,
+          email.current.value,
+          password.current.value
+        )
+          .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            if (auth.currentUser) {
+              updateProfile(auth.currentUser, {
+                displayName: name.current?.value,
+                photoURL: "https://example.com/jane-q-user/profile.jpg",
+              })
+                .then(() => {
+                  // Profile updated!
+                  // ...
+                   if (auth.currentUser) {
+                          const {uid, email, displayName, photoURL} = auth.currentUser;
+                          dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}));
+                   }
+                })
+                .catch((error) => {
+                  // An error occurred
+                  console.log(error);
+                  // ...
+                });
+            } else {
+              console.error("No authenticated user found.");
+            }
 
-    // ...
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    setErrorMessage(errorCode + " - " + errorMessage);
-  });
+            console.log(user);
+            navigate("/browse");
 
+            // ...
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            setErrorMessage(errorCode + " - " + errorMessage);
+          });
       }
     }
   };
