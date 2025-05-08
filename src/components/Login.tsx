@@ -1,5 +1,5 @@
 import Header from "./Header";
-import { SITE_UI_BACKGROUND } from "../utils/constants";
+import { SITE_UI_BACKGROUND, USER_ICON } from "../utils/constants";
 import { useState, useRef } from "react";
 import { checkValidateData } from "../utils/validateData";
 import {
@@ -65,7 +65,7 @@ const Login = () => {
             if (auth.currentUser) {
               updateProfile(auth.currentUser, {
                 displayName: name.current?.value,
-                photoURL: "https://example.com/jane-q-user/profile.jpg",
+                photoURL: USER_ICON,
               })
                 .then(() => {
                   // Profile updated!
