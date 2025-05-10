@@ -6,52 +6,68 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../utils/appStore";
 import { useEffect } from "react";
 import { addUser, removeUser } from "../utils/userSlice";
+import { toggleGptSearchView } from "../utils/gptSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((store: RootState) => store.user)
- 
+  const user = useSelector((store: RootState) => store.user);
+
+  const handleGptSeachClick = () => {
+    dispatch(toggleGptSearchView())
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        const {uid, email, displayName, photoURL} = user;
-        dispatch(addUser({uid: uid, email: email, displayName: displayName, photoURL: photoURL}));
-        navigate('/browse')
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/browse");
       } else {
         dispatch(removeUser());
-        navigate('/')
+        navigate("/");
       }
     });
-    
+
     //Unsubscribe when component is unmounted
     return () => unsubscribe();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSignout = () => {
-    signOut(auth).then(() => {
-      // Sign-out successful.
-    }).catch((error) => {
-      // An error happened.
-      <h1>{error}</h1>
-      navigate("/error");
-    });
-    
-  }
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+      })
+      .catch((error) => {
+        // An error happened.
+        <h1>{error}</h1>;
+        navigate("/error");
+      });
+  };
   return (
-    <div className="absolute w-screen px-18 py-2 bg-gradient-to-b from-black z-10 flex justify-between" >
-      <img
-        className="w-44"
-        src={NETFLIX_LOGO}
-        alt="Netflix"
-      />
+    <div className="absolute w-screen px-18 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
+      <img className="w-44" src={NETFLIX_LOGO} alt="Netflix" />
 
-      {user && <div className="flex p-2">
-        <img className="w-12 h-12" src={USER_ICON} alt="user" />
-        <button className="font-bold text-white m-1 cursor-pointer" onClick={handleSignout}>(Sign out)</button>
-      </div>
-}
+      {user && (
+        <div className="flex p-2">
+          <button className="text-white px-4 py-2 mx-4 my-2 bg-red-500 rounded-lg cursor-pointer" onClick={handleGptSeachClick}>GPT Search</button>
+          <img className="w-12 h-12" src={USER_ICON} alt="user" />
+          <button
+            className="font-bold text-white m-1 cursor-pointer"
+            onClick={handleSignout}
+          >
+            (Sign out)
+          </button>
+        </div>
+      )}
     </div>
   );
 };
