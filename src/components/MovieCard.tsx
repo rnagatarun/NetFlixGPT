@@ -5,7 +5,6 @@ interface Props {
 }
 
 function MovieCard({poster_path} : Props) {
-  console.log(IMG_CDN + poster_path)
     if (!poster_path) return null;
   return (
     <div className="w-42 pr-3">

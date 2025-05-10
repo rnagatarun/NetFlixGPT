@@ -6,7 +6,6 @@ interface MovieListProps {
 }
 
 function MovieList({ title, movies }: MovieListProps) {
-  console.log(movies);
   return (
     <div className="px-6">
         <h1 className="text-white text-2xl py-4">{title}</h1>
