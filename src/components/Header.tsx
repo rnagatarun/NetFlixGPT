@@ -1,5 +1,9 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { NETFLIX_LOGO, USER_ICON } from "../utils/constants";
+import {
+  NETFLIX_LOGO,
+  SUPPORTED_LANGUAGES,
+  USER_ICON,
+} from "../utils/constants";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -7,6 +11,7 @@ import type { RootState } from "../utils/appStore";
 import { useEffect } from "react";
 import { addUser, removeUser } from "../utils/userSlice";
 import { toggleGptSearchView } from "../utils/gptSlice";
+import { changeLanguage } from "../utils/configSlice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -14,8 +19,18 @@ const Header = () => {
   const user = useSelector((store: RootState) => store.user);
 
   const handleGptSeachClick = () => {
-    dispatch(toggleGptSearchView())
-  }
+    dispatch(toggleGptSearchView());
+  };
+
+  const handleLanguageChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    dispatch(changeLanguage(event.target.value));
+  };
+
+  const showGptSearch = useSelector(
+    (store: RootState) => store.gpt.showGptSearch
+  );
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -58,7 +73,24 @@ const Header = () => {
 
       {user && (
         <div className="flex p-2">
-          <button className="text-white px-4 py-2 mx-4 my-2 bg-red-500 rounded-lg cursor-pointer" onClick={handleGptSeachClick}>GPT Search</button>
+          {showGptSearch && (
+            <select
+              className="p-2 m-2 bg-gray-800 text-white"
+              onChange={handleLanguageChange}
+            >
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang.identifier} value={lang.identifier}>
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          )}
+          <button
+            className="text-white px-4 py-2 mx-4 my-2 bg-red-500 rounded-lg cursor-pointer"
+            onClick={handleGptSeachClick}
+          >
+            {showGptSearch ? "HomePage" : "GPT Search"}
+          </button>
           <img className="w-12 h-12" src={USER_ICON} alt="user" />
           <button
             className="font-bold text-white m-1 cursor-pointer"
