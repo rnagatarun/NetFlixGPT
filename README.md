@@ -62,5 +62,5 @@
     - Search Bar
     - Movie Suggestions
 
-#Project Setup
+# Project Setup
 - Before starting the project please add .env file and add TMDB and GEMINI KEY into it, gemini provides the free access to it's api with some free usage limits.
