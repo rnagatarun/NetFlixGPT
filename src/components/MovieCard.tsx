@@ -7,7 +7,7 @@ interface Props {
 function MovieCard({poster_path} : Props) {
     if (!poster_path) return null;
   return (
-    <div className="w-42 pr-3">
+    <div className="w-30 md:w-42 pr-3">
       <img src={IMG_CDN + poster_path} alt="MovieCard" />
     </div>
   );
