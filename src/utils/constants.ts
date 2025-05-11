@@ -5,7 +5,7 @@ export const API_OPTIONS = {
   method: 'GET',
   headers: {
     accept: 'application/json',
-    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZDQ3MmExODE3YzM2NmE5Nzk2ZjJlOWE5ZTY4ZTNmNiIsIm5iZiI6MS43NDY3MTUwNTc3NDg5OTk4ZSs5LCJzdWIiOiI2ODFjYzFiMTRlOTM5NzZhODQwMWVhMTMiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.P1YEm-aSTkZgYeI3RlFjK7r7VCuwXRpXeO8syUpOdbQ'
+    Authorization: "Bearer "+ import.meta.env.VITE_TMDB_API_KEY,
   }
 };
 export const IMG_CDN = "https://image.tmdb.org/t/p/w780";
@@ -13,4 +13,5 @@ export const SUPPORTED_LANGUAGES = [
   { identifier: "en", name: "English" },
   { identifier: "hindi", name: "Hindi" },
   { identifier: "french", name: "French" },
-]
+];
+export const OPEN_AI_KEY = import.meta.env.VITE_OPENAI_API_KEY;
