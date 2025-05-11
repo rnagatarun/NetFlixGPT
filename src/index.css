@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+body {
+  overflow-x: hidden;
+}
+
+/* Add this to style the scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: black;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}

@@ -102,7 +102,7 @@ const Login = () => {
       <Header />
       <div>
         <img
-          className="absolute w-full h-full"
+          className="absolute w-full object-cover h-full"
           src={SITE_UI_BACKGROUND}
           alt="Netflix Movies and series"
         />
@@ -111,7 +111,7 @@ const Login = () => {
       <div className="absolute top-0 left-0 h-full w-full flex items-center justify-center z-10">
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="absolute w-3/12 p-12 bg-black/88 rounded-lg shadow-lg text-white"
+          className="absolute w-10/12 md:w-3/12 p-12 bg-black/88 rounded-lg shadow-lg text-white"
         >
           <h1 className="font-bold text-2xl mb-6">
             {isSignInForm ? "Sign In" : "Sign Up"}
